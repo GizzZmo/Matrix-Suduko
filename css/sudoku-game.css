@@ -1,0 +1,459 @@
+/* Sudoku Game Styles */
+
+/* Main Game Layout */
+.game-main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    gap: 40px;
+    min-height: calc(100vh - 120px);
+}
+
+/* Sudoku Grid Container */
+.sudoku-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 1px;
+    background: var(--matrix-green);
+    border: 3px solid var(--matrix-green);
+    border-radius: 8px;
+    padding: 3px;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 65, 0.3),
+        inset 0 0 20px rgba(0, 255, 65, 0.1);
+    width: 450px;
+    height: 450px;
+}
+
+/* Sudoku Cell Styles */
+.sudoku-cell {
+    background: var(--matrix-black);
+    border: 1px solid var(--matrix-dark-green);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--matrix-font);
+    color: var(--matrix-green);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    user-select: none;
+    width: 100%;
+    height: 100%;
+}
+
+.sudoku-cell:hover {
+    background: var(--matrix-dark-green);
+    box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.3);
+    transform: scale(1.05);
+}
+
+.sudoku-cell.selected {
+    background: var(--matrix-dark-green);
+    box-shadow: 
+        0 0 15px var(--matrix-green),
+        inset 0 0 15px rgba(0, 255, 65, 0.3);
+    border: 2px solid var(--matrix-light-green);
+}
+
+.sudoku-cell.given {
+    background: var(--matrix-dark-gray);
+    color: var(--matrix-light-green);
+    font-weight: 900;
+    cursor: not-allowed;
+    text-shadow: 0 0 5px var(--matrix-light-green);
+}
+
+.sudoku-cell.given:hover {
+    transform: none;
+    background: var(--matrix-dark-gray);
+}
+
+.sudoku-cell.error {
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff4444;
+    border-color: #ff4444;
+    animation: shake 0.5s ease-in-out;
+}
+
+.sudoku-cell.hint {
+    background: rgba(255, 255, 0, 0.2);
+    color: #ffff44;
+    border-color: #ffff44;
+    animation: pulse 1s ease-in-out 3;
+}
+
+.sudoku-cell.solved {
+    background: rgba(0, 255, 65, 0.2);
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Highlight related cells */
+.sudoku-cell.highlight-row,
+.sudoku-cell.highlight-col,
+.sudoku-cell.highlight-box {
+    background: rgba(0, 255, 65, 0.1);
+}
+
+/* Thick borders for 3x3 sections */
+.sudoku-cell:nth-child(3n) {
+    border-right: 2px solid var(--matrix-green);
+}
+
+.sudoku-cell:nth-child(n+19):nth-child(-n+27),
+.sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 2px solid var(--matrix-green);
+}
+
+/* Control Panel */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    min-width: 300px;
+}
+
+/* Number Buttons */
+.number-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.number-btn {
+    @extend .btn-base;
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    border-radius: 8px;
+    background: linear-gradient(145deg, var(--matrix-dark-gray), var(--matrix-medium-gray));
+    border: 2px solid var(--matrix-green);
+    color: var(--matrix-green);
+    font-family: var(--matrix-font);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.number-btn:hover {
+    background: linear-gradient(145deg, var(--matrix-medium-gray), var(--matrix-light-gray));
+    box-shadow: var(--matrix-glow);
+    transform: translateY(-2px);
+}
+
+.number-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px var(--matrix-green);
+}
+
+.number-btn.selected {
+    background: var(--matrix-green);
+    color: var(--matrix-black);
+    box-shadow: 0 0 20px var(--matrix-green);
+}
+
+.erase-btn {
+    grid-column: span 3;
+    font-size: 1rem;
+    background: linear-gradient(145deg, #660000, #990000);
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
+.erase-btn:hover {
+    background: linear-gradient(145deg, #990000, #cc0000);
+    box-shadow: 0 0 20px #ff4444;
+}
+
+/* Game Controls */
+.game-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.control-btn {
+    @extend .btn-base;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 6px;
+    background: linear-gradient(145deg, var(--matrix-dark-gray), var(--matrix-medium-gray));
+    border: 2px solid var(--matrix-green);
+    color: var(--matrix-green);
+    font-family: var(--matrix-font);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.control-btn:hover {
+    background: linear-gradient(145deg, var(--matrix-medium-gray), var(--matrix-light-gray));
+    box-shadow: var(--matrix-glow);
+    transform: translateY(-2px);
+}
+
+.control-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px var(--matrix-green);
+}
+
+.control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Difficulty Selector */
+.difficulty-selector {
+    border-top: 1px solid var(--matrix-dark-green);
+    padding-top: 20px;
+}
+
+.difficulty-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+.difficulty-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.difficulty-btn {
+    @extend .btn-base;
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    background: linear-gradient(145deg, var(--matrix-dark-gray), var(--matrix-medium-gray));
+    border: 2px solid var(--matrix-green);
+    color: var(--matrix-green);
+    font-family: var(--matrix-font);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.difficulty-btn:hover {
+    background: linear-gradient(145deg, var(--matrix-medium-gray), var(--matrix-light-gray));
+    box-shadow: var(--matrix-glow);
+    transform: translateY(-2px);
+}
+
+.difficulty-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px var(--matrix-green);
+}
+
+.difficulty-btn.active {
+    background: var(--matrix-green);
+    color: var(--matrix-black);
+    box-shadow: 0 0 15px var(--matrix-green);
+}
+
+/* Game Modal */
+.game-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: linear-gradient(145deg, var(--matrix-dark-gray), var(--matrix-medium-gray));
+    border: 3px solid var(--matrix-green);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 
+        0 0 30px var(--matrix-green),
+        inset 0 0 20px rgba(0, 255, 65, 0.1);
+}
+
+.modal-title {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-shadow: var(--matrix-text-shadow);
+    color: var(--matrix-green);
+}
+
+.modal-message {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.modal-btn {
+    @extend .btn-base;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 6px;
+    background: linear-gradient(145deg, var(--matrix-dark-gray), var(--matrix-medium-gray));
+    border: 2px solid var(--matrix-green);
+    color: var(--matrix-green);
+    font-family: var(--matrix-font);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-btn:hover {
+    background: linear-gradient(145deg, var(--matrix-medium-gray), var(--matrix-light-gray));
+    box-shadow: var(--matrix-glow);
+    transform: translateY(-2px);
+}
+
+.modal-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px var(--matrix-green);
+}
+
+.modal-btn.secondary {
+    background: linear-gradient(145deg, var(--matrix-medium-gray), var(--matrix-light-gray));
+    border-color: var(--matrix-dark-green);
+    color: var(--matrix-dark-green);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .game-main {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        padding: 20px;
+    }
+    
+    .sudoku-grid {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .control-panel {
+        min-width: 400px;
+    }
+    
+    .number-buttons {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .number-btn {
+        width: 70px;
+        height: 50px;
+    }
+    
+    .erase-btn {
+        grid-column: span 5;
+    }
+}
+
+@media (max-width: 768px) {
+    .sudoku-grid {
+        width: 350px;
+        height: 350px;
+    }
+    
+    .sudoku-cell {
+        font-size: 1.2rem;
+    }
+    
+    .control-panel {
+        min-width: 350px;
+    }
+    
+    .difficulty-buttons {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-main {
+        padding: 15px;
+    }
+    
+    .sudoku-grid {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .sudoku-cell {
+        font-size: 1rem;
+    }
+    
+    .control-panel {
+        min-width: 300px;
+    }
+    
+    .number-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .number-btn {
+        width: 60px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+    
+    .erase-btn {
+        grid-column: span 3;
+        font-size: 0.9rem;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        margin: 20px;
+    }
+    
+    .modal-title {
+        font-size: 1.5rem;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+}
