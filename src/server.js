@@ -140,9 +140,48 @@ class MatrixSudokuServer {
             res.json({
                 difficulty: difficulty,
                 scores: [
-                    { rank: 1, time: '02:15', errors: 0, difficulty: 'expert', date: '2024-01-15' },
-                    { rank: 2, time: '02:33', errors: 1, difficulty: 'expert', date: '2024-01-14' },
-                    { rank: 3, time: '03:01', errors: 0, difficulty: 'hard', date: '2024-01-13' }
+                    { rank: 1, name: 'Neo', time: '02:15', errors: 0, difficulty: 'expert', date: '2024-01-15', points: 150 },
+                    { rank: 2, name: 'Trinity', time: '02:33', errors: 1, difficulty: 'expert', date: '2024-01-14', points: 120 },
+                    { rank: 3, name: 'Morpheus', time: '03:01', errors: 0, difficulty: 'hard', date: '2024-01-13', points: 100 },
+                    { rank: 4, name: 'Agent Smith', time: '03:15', errors: 2, difficulty: 'hard', date: '2024-01-12', points: 90 },
+                    { rank: 5, name: 'Oracle', time: '04:20', errors: 0, difficulty: 'medium', date: '2024-01-11', points: 80 }
+                ]
+            });
+        });
+
+        // Submit score API
+        this.app.post('/api/submit-score', (req, res) => {
+            try {
+                const scoreData = req.body;
+                // In a real implementation, save to database and update leaderboard
+                console.log('Score submitted:', scoreData);
+                res.json({ success: true, message: 'Score submitted successfully', rank: Math.floor(Math.random() * 100) + 1 });
+            } catch (error) {
+                res.status(500).json({ success: false, error: error.message });
+            }
+        });
+
+        // Daily challenge API
+        this.app.get('/api/daily-challenge/:date?', (req, res) => {
+            const date = req.params.date || new Date().toISOString().split('T')[0];
+            try {
+                // Generate consistent daily challenge based on date
+                const challenge = this.generateDailyChallenge(date);
+                res.json({ success: true, challenge });
+            } catch (error) {
+                res.status(500).json({ success: false, error: error.message });
+            }
+        });
+
+        // Achievements API
+        this.app.get('/api/achievements/:playerId?', (req, res) => {
+            const playerId = req.params.playerId;
+            // In a real implementation, fetch from database
+            res.json({
+                success: true,
+                achievements: [
+                    { id: 'first_solve', name: 'First Steps', earned: true, date: '2024-01-10' },
+                    { id: 'speed_demon', name: 'Speed Demon', earned: false, progress: 0.6 }
                 ]
             });
         });
@@ -172,6 +211,9 @@ class MatrixSudokuServer {
             averageTime: 0,
             connectedPlayers: 0
         };
+
+        // Multiplayer room management
+        this.multiplayerRooms = new Map();
 
         this.io.on('connection', (socket) => {
             this.gameStats.connectedPlayers++;
@@ -211,15 +253,89 @@ class MatrixSudokuServer {
                 console.log(`Error made by ${socket.id}`);
             });
 
-            // Handle multiplayer features (future enhancement)
-            socket.on('join-room', (roomId) => {
+            // Multiplayer features
+            socket.on('create-room', (data) => {
+                const roomId = this.generateRoomId();
+                const room = {
+                    id: roomId,
+                    host: socket.id,
+                    players: [{ id: socket.id, name: data.playerName, ready: false }],
+                    puzzle: null,
+                    gameState: 'waiting',
+                    maxPlayers: data.maxPlayers || 4,
+                    difficulty: data.difficulty || 'medium',
+                    isPrivate: data.isPrivate || false
+                };
+                
+                this.multiplayerRooms.set(roomId, room);
                 socket.join(roomId);
-                console.log(`Player ${socket.id} joined room ${roomId}`);
+                socket.emit('room-created', { roomId, room });
+                
+                console.log(`Room created: ${roomId} by ${socket.id}`);
+            });
+
+            socket.on('join-room', (data) => {
+                const { roomId, playerName } = data;
+                const room = this.multiplayerRooms.get(roomId);
+                
+                if (room && room.players.length < room.maxPlayers) {
+                    room.players.push({ id: socket.id, name: playerName, ready: false });
+                    socket.join(roomId);
+                    
+                    this.io.to(roomId).emit('player-joined', { 
+                        player: { id: socket.id, name: playerName },
+                        room: room
+                    });
+                    
+                    console.log(`Player ${socket.id} joined room ${roomId}`);
+                } else {
+                    socket.emit('join-room-failed', { 
+                        reason: room ? 'Room is full' : 'Room not found' 
+                    });
+                }
             });
 
             socket.on('leave-room', (roomId) => {
-                socket.leave(roomId);
-                console.log(`Player ${socket.id} left room ${roomId}`);
+                this.handlePlayerLeaveRoom(socket, roomId);
+            });
+
+            socket.on('player-ready', (data) => {
+                const { roomId } = data;
+                const room = this.multiplayerRooms.get(roomId);
+                
+                if (room) {
+                    const player = room.players.find(p => p.id === socket.id);
+                    if (player) {
+                        player.ready = !player.ready;
+                        this.io.to(roomId).emit('player-ready-status', { 
+                            playerId: socket.id, 
+                            ready: player.ready 
+                        });
+                        
+                        // Check if all players are ready
+                        if (room.players.every(p => p.ready) && room.players.length >= 2) {
+                            this.startMultiplayerGame(roomId);
+                        }
+                    }
+                }
+            });
+
+            socket.on('multiplayer-move', (data) => {
+                const { roomId, move } = data;
+                socket.to(roomId).emit('opponent-move', { 
+                    playerId: socket.id, 
+                    move: move 
+                });
+            });
+
+            socket.on('multiplayer-game-completed', (data) => {
+                const { roomId, gameData } = data;
+                this.io.to(roomId).emit('player-finished', { 
+                    playerId: socket.id, 
+                    gameData: gameData 
+                });
+                
+                console.log(`Player ${socket.id} finished multiplayer game in room ${roomId}`);
             });
 
             // Handle disconnect
@@ -227,6 +343,9 @@ class MatrixSudokuServer {
                 this.gameStats.connectedPlayers--;
                 console.log(`Player disconnected: ${socket.id} (Total: ${this.gameStats.connectedPlayers})`);
                 this.io.emit('player-count', this.gameStats.connectedPlayers);
+                
+                // Clean up multiplayer rooms
+                this.handlePlayerDisconnect(socket);
             });
         });
     }
@@ -273,6 +392,115 @@ class MatrixSudokuServer {
         return new Promise((resolve) => {
             this.server.close(resolve);
         });
+    }
+
+    /**
+     * Generate a unique room ID
+     * @returns {string} Room ID
+     */
+    generateRoomId() {
+        return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    /**
+     * Generate daily challenge based on date
+     * @param {string} date - Date string (YYYY-MM-DD)
+     * @returns {Object} Daily challenge data
+     */
+    generateDailyChallenge(date) {
+        const dayOfWeek = new Date(date).getDay();
+        const difficulties = ['easy', 'easy', 'medium', 'medium', 'hard', 'hard', 'expert'];
+        const themes = ['matrix', 'cyberpunk', 'neon', 'classic'];
+        
+        const dayOfYear = Math.floor((new Date(date) - new Date(date.substring(0, 4) + '-01-01')) / 86400000);
+        
+        return {
+            date: date,
+            difficulty: difficulties[dayOfWeek],
+            theme: themes[dayOfYear % themes.length],
+            seed: date.split('-').reduce((acc, part) => acc + parseInt(part), 0) * 1000,
+            bonus: { easy: 10, medium: 20, hard: 35, expert: 50 }[difficulties[dayOfWeek]]
+        };
+    }
+
+    /**
+     * Start multiplayer game for a room
+     * @param {string} roomId - Room ID
+     */
+    startMultiplayerGame(roomId) {
+        const room = this.multiplayerRooms.get(roomId);
+        if (!room) return;
+
+        // Generate puzzle for the room
+        room.puzzle = this.generateMultiplayerPuzzle(room.difficulty);
+        room.gameState = 'playing';
+
+        this.io.to(roomId).emit('multiplayer-game-started', {
+            puzzle: room.puzzle,
+            players: room.players
+        });
+
+        console.log(`Multiplayer game started in room ${roomId}`);
+    }
+
+    /**
+     * Generate puzzle for multiplayer (simplified)
+     * @param {string} difficulty - Difficulty level
+     * @returns {Object} Puzzle data
+     */
+    generateMultiplayerPuzzle(difficulty) {
+        // This is a placeholder - in a real implementation, 
+        // you'd generate or fetch a Sudoku puzzle
+        return {
+            grid: Array(9).fill().map(() => Array(9).fill(0)),
+            solution: Array(9).fill().map(() => Array(9).fill(1)),
+            difficulty: difficulty
+        };
+    }
+
+    /**
+     * Handle player leaving a room
+     * @param {Object} socket - Socket instance
+     * @param {string} roomId - Room ID
+     */
+    handlePlayerLeaveRoom(socket, roomId) {
+        const room = this.multiplayerRooms.get(roomId);
+        if (!room) return;
+
+        // Remove player from room
+        room.players = room.players.filter(p => p.id !== socket.id);
+        socket.leave(roomId);
+
+        if (room.players.length === 0) {
+            // Delete empty room
+            this.multiplayerRooms.delete(roomId);
+            console.log(`Room ${roomId} deleted (empty)`);
+        } else {
+            // If host left, assign new host
+            if (room.host === socket.id && room.players.length > 0) {
+                room.host = room.players[0].id;
+            }
+
+            this.io.to(roomId).emit('player-left', {
+                playerId: socket.id,
+                room: room
+            });
+        }
+
+        console.log(`Player ${socket.id} left room ${roomId}`);
+    }
+
+    /**
+     * Handle player disconnect
+     * @param {Object} socket - Socket instance
+     */
+    handlePlayerDisconnect(socket) {
+        // Find and clean up rooms this player was in
+        for (const [roomId, room] of this.multiplayerRooms) {
+            if (room.players.some(p => p.id === socket.id)) {
+                this.handlePlayerLeaveRoom(socket, roomId);
+            }
+        }
     }
 }
 

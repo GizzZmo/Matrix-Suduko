@@ -14,6 +14,12 @@ A stunning Matrix-themed Sudoku game with exceptional UI/UX, built with HTML5, N
 - **Responsive design**: Perfect for desktop, tablet, and mobile
 - **Sound effects**: Matrix-themed audio feedback
 - **Keyboard shortcuts**: Full keyboard navigation support
+- **🎨 Multiple themes**: Matrix (classic), Cyberpunk, Neon, and Classic themes
+- **🏆 Achievement system**: Unlock badges for various accomplishments
+- **📅 Daily challenges**: New puzzle every day with bonus points
+- **🌐 Multiplayer support**: Play with friends in real-time
+- **📊 Online leaderboards**: Compete with players worldwide
+- **📱 Social sharing**: Share your achievements and high scores
 
 ## 🚀 Quick Start
 
@@ -162,12 +168,12 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 
 ## 🔮 Future Enhancements
 
-- [ ] Multiplayer support
-- [ ] Online leaderboards
-- [ ] More themes (Cyberpunk, Neon, Classic)
-- [ ] Achievement system
-- [ ] Daily challenges
-- [ ] Social sharing features
+- [x] Multiplayer support
+- [x] Online leaderboards
+- [x] More themes (Cyberpunk, Neon, Classic)
+- [x] Achievement system
+- [x] Daily challenges
+- [x] Social sharing features
 
 ---
 

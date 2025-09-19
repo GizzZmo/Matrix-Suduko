@@ -16,6 +16,11 @@ class MatrixSudokuApp {
      */
     constructor() {
         this.gameController = null;
+        this.themeManager = null;
+        this.achievementManager = null;
+        this.dailyChallengeManager = null;
+        this.socialSharingManager = null;
+        this.multiplayerManager = null;
         this.isInitialized = false;
         this.version = '1.0.0';
         
@@ -100,6 +105,18 @@ class MatrixSudokuApp {
         // Setup theme system
         this.setupTheme();
         
+        // Initialize achievement system
+        this.initializeAchievements();
+        
+        // Initialize daily challenges
+        this.initializeDailyChallenges();
+        
+        // Initialize social sharing
+        this.initializeSocialSharing();
+        
+        // Initialize multiplayer
+        this.initializeMultiplayer();
+        
         // Initialize audio system
         this.initializeAudio();
     }
@@ -172,14 +189,17 @@ class MatrixSudokuApp {
      * Setup theme system
      */
     setupTheme() {
+        // Initialize theme manager
+        this.themeManager = new ThemeManager();
+        
         // Set CSS custom properties for theme
         const root = document.documentElement;
         
-        // Add theme class to body
+        // Add theme class to body (will be managed by ThemeManager)
         document.body.classList.add('matrix-theme');
         
-        // Setup theme toggle functionality (for future use)
-        this.currentTheme = 'matrix';
+        // Setup theme toggle functionality (now handled by ThemeManager)
+        this.currentTheme = this.themeManager.getCurrentTheme().name;
     }
 
     /**
@@ -211,6 +231,34 @@ class MatrixSudokuApp {
                 document.body.appendChild(audio);
             }
         });
+    }
+
+    /**
+     * Initialize achievement system
+     */
+    initializeAchievements() {
+        this.achievementManager = new AchievementManager();
+    }
+
+    /**
+     * Initialize daily challenges
+     */
+    initializeDailyChallenges() {
+        this.dailyChallengeManager = new DailyChallengeManager();
+    }
+
+    /**
+     * Initialize social sharing
+     */
+    initializeSocialSharing() {
+        this.socialSharingManager = new SocialSharingManager();
+    }
+
+    /**
+     * Initialize multiplayer
+     */
+    initializeMultiplayer() {
+        this.multiplayerManager = new MultiplayerManager();
     }
 
     /**
