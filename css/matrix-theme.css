@@ -1,5 +1,6 @@
-/* Matrix Theme Styles */
+/* Matrix Theme Styles - Updated for Multi-Theme Support */
 :root {
+    /* Legacy variables for backward compatibility */
     --matrix-green: #00ff41;
     --matrix-dark-green: #003d10;
     --matrix-light-green: #65ff65;
@@ -10,6 +11,19 @@
     --matrix-text-shadow: 0 0 10px var(--matrix-green);
     --matrix-glow: 0 0 20px var(--matrix-green);
     --matrix-font: 'Orbitron', monospace;
+    
+    /* New theme system variables */
+    --primary-color: #00ff41;
+    --primary-dark: #003d10;
+    --primary-light: #65ff65;
+    --background-color: #000000;
+    --background-dark: #0d1117;
+    --background-medium: #1a1a1a;
+    --background-light: #333333;
+    --text-color: #00ff41;
+    --text-shadow: 0 0 10px var(--primary-color);
+    --primary-glow: 0 0 20px var(--primary-color);
+    --primary-font: 'Orbitron', monospace;
 }
 
 * {
@@ -19,9 +33,9 @@
 }
 
 body {
-    font-family: var(--matrix-font);
-    background: var(--matrix-black);
-    color: var(--matrix-green);
+    font-family: var(--primary-font);
+    background: var(--background-color);
+    color: var(--text-color);
     overflow-x: hidden;
     min-height: 100vh;
     position: relative;
