@@ -1,0 +1,254 @@
+/* Matrix Theme Styles */
+:root {
+    --matrix-green: #00ff41;
+    --matrix-dark-green: #003d10;
+    --matrix-light-green: #65ff65;
+    --matrix-black: #000000;
+    --matrix-dark-gray: #0d1117;
+    --matrix-medium-gray: #1a1a1a;
+    --matrix-light-gray: #333333;
+    --matrix-text-shadow: 0 0 10px var(--matrix-green);
+    --matrix-glow: 0 0 20px var(--matrix-green);
+    --matrix-font: 'Orbitron', monospace;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--matrix-font);
+    background: var(--matrix-black);
+    color: var(--matrix-green);
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Matrix Background Animation */
+#matrix-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+#matrix-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Main Container */
+#game-container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(2px);
+}
+
+/* Header Styles */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 2px solid var(--matrix-green);
+    background: rgba(0, 61, 16, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.game-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-shadow: var(--matrix-text-shadow);
+    letter-spacing: 3px;
+}
+
+.matrix-text {
+    color: var(--matrix-green);
+    text-shadow: 
+        0 0 5px var(--matrix-green),
+        0 0 10px var(--matrix-green),
+        0 0 15px var(--matrix-green);
+}
+
+.sudoku-text {
+    color: var(--matrix-light-green);
+    margin-left: 10px;
+}
+
+.game-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    font-weight: 400;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-shadow: var(--matrix-text-shadow);
+}
+
+/* Animation Classes */
+.matrix-glow {
+    animation: matrixGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes matrixGlow {
+    from {
+        text-shadow: 
+            0 0 5px var(--matrix-green),
+            0 0 10px var(--matrix-green),
+            0 0 15px var(--matrix-green);
+    }
+    to {
+        text-shadow: 
+            0 0 10px var(--matrix-green),
+            0 0 20px var(--matrix-green),
+            0 0 30px var(--matrix-green),
+            0 0 40px var(--matrix-green);
+    }
+}
+
+.pulse {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Button Base Styles */
+.btn-base {
+    background: linear-gradient(145deg, var(--matrix-dark-gray), var(--matrix-medium-gray));
+    border: 2px solid var(--matrix-green);
+    color: var(--matrix-green);
+    font-family: var(--matrix-font);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-base:hover {
+    background: linear-gradient(145deg, var(--matrix-medium-gray), var(--matrix-light-gray));
+    box-shadow: var(--matrix-glow);
+    transform: translateY(-2px);
+}
+
+.btn-base:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px var(--matrix-green);
+}
+
+.btn-base::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-base:hover::before {
+    left: 100%;
+}
+
+/* Hidden utility */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .game-header {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .game-title {
+        font-size: 2rem;
+    }
+    
+    .game-stats {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-header {
+        padding: 15px;
+    }
+    
+    .game-title {
+        font-size: 1.5rem;
+    }
+    
+    .game-stats {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .stat-item {
+        min-width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-title {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+    
+    .matrix-text, .sudoku-text {
+        display: block;
+        margin: 0;
+    }
+}
