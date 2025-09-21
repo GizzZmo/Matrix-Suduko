@@ -95,7 +95,34 @@ Fill the 9×9 grid so that each column, row, and 3×3 box contains the digits 1-
 - **Error indication**: Invalid moves are highlighted in red
 - **Completion animation**: Celebrate your success!
 
+## 📚 Documentation
+
+Comprehensive documentation is available in the [`docs/`](docs/) directory:
+
+- **[📖 Complete Documentation](docs/README.md)** - Full documentation index
+- **[🛠️ Developer Setup](docs/guides/developer-setup.md)** - Get started with development
+- **[🏗️ Architecture Guide](docs/architecture/README.md)** - System design and patterns
+- **[📋 API Reference](docs/api/README.md)** - Detailed API documentation
+- **[👤 User Manual](docs/user-manual/README.md)** - Complete user guide
+- **[🤝 Contributing](docs/contributing/CONTRIBUTING.md)** - How to contribute
+- **[🔧 Troubleshooting](docs/user-manual/troubleshooting.md)** - Common issues and solutions
+
 ## 🔧 Development
+
+### Quick Start
+
+```bash
+# Clone and setup
+git clone https://github.com/GizzZmo/Matrix-Suduko.git
+cd Matrix-Suduko
+npm install
+
+# Run development server
+npm run dev
+
+# Run web version
+npm run web
+```
 
 ### Project Structure
 
@@ -108,18 +135,28 @@ Matrix-Suduko/
 │   └── server.js          # Web server
 ├── css/                   # Stylesheets
 │   ├── matrix-theme.css   # Matrix theme styles
+│   ├── themes.css         # Multi-theme system
 │   └── sudoku-game.css    # Game-specific styles
 ├── js/                    # JavaScript modules
 │   ├── app.js             # Main application
 │   ├── game-controller.js # Game coordination
 │   ├── matrix-background.js # Matrix animation
 │   ├── sudoku-engine.js   # Game logic
-│   └── sudoku-ui.js       # User interface
+│   ├── sudoku-ui.js       # User interface
+│   ├── achievement-manager.js # Achievement system
+│   ├── theme-manager.js   # Theme management
+│   └── [other modules]    # Additional features
 ├── assets/                # Game assets
-│   ├── sounds/            # Audio files
-│   └── icons/             # Application icons
+│   └── sounds/            # Audio files
 ├── tests/                 # Test files
-└── docs/                  # Documentation
+├── docs/                  # Comprehensive documentation
+│   ├── api/              # API reference
+│   ├── guides/           # Developer guides
+│   ├── architecture/     # System architecture
+│   ├── deployment/       # Build and deployment
+│   ├── user-manual/      # User documentation
+│   └── contributing/     # Contributing guidelines
+└── dist/                  # Build output (generated)
 ```
 
 ### Architecture
