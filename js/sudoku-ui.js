@@ -521,25 +521,32 @@ class SudokuUI {
     }
 
     /**
-     * Solve the puzzle automatically
+     * Solve the puzzle automatically using backtracking algorithm
      */
     solvePuzzle() {
         if (!this.gameActive) return;
         
-        // Copy solution to current grid
-        for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
-                this.engine.grid[row][col] = this.engine.solution[row][col];
+        // Use the backtracking solver to solve the current puzzle
+        const result = this.engine.solveCurrentPuzzle();
+        
+        if (result.success) {
+            // Copy the solved grid to the engine's grid
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    this.engine.grid[row][col] = result.solution[row][col];
+                }
             }
+            
+            // Animate the solution with solving steps
+            this.animateSolutionSteps(result.steps);
+            
+            this.gameActive = false;
+            this.stopTimer();
+            
+            this.showModal('Puzzle Solved!', 'The puzzle has been solved using backtracking algorithm.');
+        } else {
+            this.showModal('Cannot Solve', 'This puzzle cannot be solved. Please check if it\'s a valid Sudoku puzzle.');
         }
-        
-        // Update display with animation
-        this.animateSolution();
-        
-        this.gameActive = false;
-        this.stopTimer();
-        
-        this.showModal('Puzzle Solved!', 'The puzzle has been solved automatically.');
     }
 
     /**
@@ -569,6 +576,29 @@ class SudokuUI {
                     cellElement.classList.remove('solved');
                 }, 500);
             }, index * 100);
+        });
+    }
+
+    /**
+     * Animate the solution using solving steps from backtracking algorithm
+     * @param {Array} steps - Array of solving steps
+     */
+    animateSolutionSteps(steps) {
+        steps.forEach((step, index) => {
+            setTimeout(() => {
+                const cellElement = this.grid.children[step.row * 9 + step.col];
+                cellElement.classList.add('solving');
+                this.updateCell(step.row, step.col, step.value);
+                
+                setTimeout(() => {
+                    cellElement.classList.remove('solving');
+                    cellElement.classList.add('solved');
+                    
+                    setTimeout(() => {
+                        cellElement.classList.remove('solved');
+                    }, 300);
+                }, 200);
+            }, index * 150);
         });
     }
 

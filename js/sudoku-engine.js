@@ -94,6 +94,57 @@ class SudokuEngine {
     }
 
     /**
+     * Solve puzzle with step-by-step tracking for animation
+     * @param {Array} grid - 9x9 grid to solve
+     * @param {Array} steps - Array to store solving steps
+     * @returns {boolean} True if solved, false if unsolvable
+     */
+    solvePuzzleWithSteps(grid, steps = []) {
+        const empty = this.findEmptyCell(grid);
+        if (!empty) {
+            return true; // Puzzle solved
+        }
+
+        const [row, col] = empty;
+        
+        // Use ordered numbers for more logical solving
+        for (let num = 1; num <= 9; num++) {
+            if (this.isValidMove(grid, row, col, num)) {
+                grid[row][col] = num;
+                steps.push({ row, col, value: num, type: 'place' });
+
+                if (this.solvePuzzleWithSteps(grid, steps)) {
+                    return true;
+                }
+
+                // Backtrack
+                grid[row][col] = 0;
+                steps.push({ row, col, value: 0, type: 'backtrack' });
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Solve current puzzle using backtracking algorithm
+     * @returns {Object} Solution result with success status and steps
+     */
+    solveCurrentPuzzle() {
+        // Create a copy of current grid to solve
+        const gridCopy = this.grid.map(row => [...row]);
+        const steps = [];
+        
+        const solved = this.solvePuzzleWithSteps(gridCopy, steps);
+        
+        return {
+            success: solved,
+            solution: solved ? gridCopy : null,
+            steps: steps.filter(step => step.type === 'place') // Only include placement steps for animation
+        };
+    }
+
+    /**
      * Find the next empty cell in the grid
      * @param {Array} grid - 9x9 grid
      * @returns {Array|null} [row, col] of empty cell or null if none
