@@ -15,8 +15,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    perspective: 1200px;
-    perspective-origin: center center;
+    perspective: 1500px;
+    perspective-origin: center top;
 }
 
 .sudoku-grid {
@@ -35,13 +35,13 @@
         0 10px 30px rgba(0, 0, 0, 0.5);
     width: 450px;
     height: 450px;
-    transform: rotateX(5deg) rotateY(0deg);
+    transform: perspective(1500px) rotateX(8deg) rotateY(0deg) translateZ(0);
     transform-style: preserve-3d;
     transition: transform 0.3s ease;
 }
 
 .sudoku-grid:hover {
-    transform: rotateX(3deg) rotateY(0deg) translateZ(10px);
+    transform: perspective(1500px) rotateX(5deg) rotateY(0deg) translateZ(15px);
     box-shadow: 
         0 0 30px rgba(0, 255, 65, 0.4),
         0 0 50px rgba(0, 255, 65, 0.3),
