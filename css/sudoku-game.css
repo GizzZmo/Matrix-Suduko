@@ -40,8 +40,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 900;
     font-family: var(--matrix-font);
     color: var(--matrix-green);
     cursor: pointer;
@@ -50,12 +50,26 @@
     user-select: none;
     width: 100%;
     height: 100%;
+    /* Enhanced 3D text effect for better visibility */
+    text-shadow: 
+        0 0 10px var(--matrix-green),
+        0 0 20px var(--matrix-green),
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        -1px -1px 2px rgba(0, 255, 65, 0.3),
+        1px 1px 3px rgba(0, 255, 65, 0.5);
+    transform-style: preserve-3d;
 }
 
 .sudoku-cell:hover {
     background: var(--matrix-dark-green);
     box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.3);
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(5px);
+    text-shadow: 
+        0 0 15px var(--matrix-green),
+        0 0 25px var(--matrix-green),
+        3px 3px 6px rgba(0, 0, 0, 0.9),
+        -1px -1px 3px rgba(0, 255, 65, 0.4),
+        2px 2px 5px rgba(0, 255, 65, 0.6);
 }
 
 .sudoku-cell.selected {
@@ -64,6 +78,7 @@
         0 0 15px var(--matrix-green),
         inset 0 0 15px rgba(0, 255, 65, 0.3);
     border: 2px solid var(--matrix-light-green);
+    transform: translateZ(8px);
 }
 
 .sudoku-cell.given {
@@ -71,7 +86,15 @@
     color: var(--matrix-light-green);
     font-weight: 900;
     cursor: not-allowed;
-    text-shadow: 0 0 5px var(--matrix-light-green);
+    font-size: 2.2rem;
+    /* Enhanced 3D effect for given cells */
+    text-shadow: 
+        0 0 8px var(--matrix-light-green),
+        0 0 16px var(--matrix-light-green),
+        0 0 24px var(--matrix-light-green),
+        3px 3px 5px rgba(0, 0, 0, 0.8),
+        -1px -1px 2px rgba(101, 255, 101, 0.4),
+        2px 2px 4px rgba(101, 255, 101, 0.6);
 }
 
 .sudoku-cell.given:hover {
@@ -84,6 +107,10 @@
     color: #ff4444;
     border-color: #ff4444;
     animation: shake 0.5s ease-in-out;
+    text-shadow: 
+        0 0 10px #ff4444,
+        0 0 20px #ff4444,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .sudoku-cell.hint {
@@ -91,6 +118,10 @@
     color: #ffff44;
     border-color: #ffff44;
     animation: pulse 1s ease-in-out 3;
+    text-shadow: 
+        0 0 10px #ffff44,
+        0 0 20px #ffff44,
+        2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .sudoku-cell.solved {
@@ -159,16 +190,46 @@
     letter-spacing: 1px;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+/* Number button symbol and number styling */
+.number-btn .btn-symbol {
+    font-size: 1.8rem;
+    line-height: 1;
+    text-shadow: 
+        0 0 8px var(--matrix-green),
+        0 0 16px var(--matrix-green),
+        2px 2px 3px rgba(0, 0, 0, 0.8);
+    transform: translateZ(2px);
+}
+
+.number-btn .btn-number {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    line-height: 1;
+    text-shadow: 0 0 5px var(--matrix-green);
 }
 
 .number-btn:hover {
     background: linear-gradient(145deg, var(--matrix-medium-gray), var(--matrix-light-gray));
     box-shadow: var(--matrix-glow);
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(5px);
+}
+
+.number-btn:hover .btn-symbol {
+    text-shadow: 
+        0 0 12px var(--matrix-green),
+        0 0 24px var(--matrix-green),
+        3px 3px 5px rgba(0, 0, 0, 0.9);
 }
 
 .number-btn:active {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
     box-shadow: 0 0 10px var(--matrix-green);
 }
 
@@ -176,6 +237,16 @@
     background: var(--matrix-green);
     color: var(--matrix-black);
     box-shadow: 0 0 20px var(--matrix-green);
+}
+
+.number-btn.selected .btn-symbol {
+    text-shadow: 
+        0 0 10px var(--matrix-black),
+        2px 2px 4px rgba(0, 255, 65, 0.8);
+}
+
+.number-btn.selected .btn-number {
+    text-shadow: 0 0 5px var(--matrix-black);
 }
 
 .erase-btn {
