@@ -26,6 +26,19 @@ class SudokuUI {
         this.errors = 0;
         this.hintsUsed = 0;
         
+        // Symbol mapping for numbers 1-9 (Matrix-themed signs)
+        this.numberSymbols = {
+            1: '⬢',  // Hexagon
+            2: '⬡',  // Hollow hexagon
+            3: '◆',  // Diamond
+            4: '◇',  // Hollow diamond
+            5: '●',  // Circle
+            6: '○',  // Hollow circle
+            7: '▲',  // Triangle
+            8: '△',  // Hollow triangle
+            9: '■'   // Square
+        };
+        
         this.initializeElements();
         this.setupEventListeners();
         this.createGrid();
@@ -315,7 +328,15 @@ class SudokuUI {
         const cellIndex = row * 9 + col;
         const cell = this.grid.children[cellIndex];
         
-        cell.textContent = value === 0 ? '' : value.toString();
+        // Use symbol mapping for better visibility
+        cell.textContent = value === 0 ? '' : this.numberSymbols[value];
+        
+        // Add data attribute to store the actual number for reference
+        if (value !== 0) {
+            cell.dataset.number = value;
+        } else {
+            delete cell.dataset.number;
+        }
         
         if (this.engine.isGivenCell(row, col)) {
             cell.classList.add('given');
